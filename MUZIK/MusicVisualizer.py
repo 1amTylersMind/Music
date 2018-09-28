@@ -1,4 +1,4 @@
-import sys, os, time, wave, numpy as np
+import os
 
 ''' Inline Colors '''
 CEND   = '\33[0m'
@@ -46,7 +46,7 @@ def main():
     print CPURP + CBOLD + "\t\tPlaying " + \
           CBOLD + CGREEN + songs[opt].replace('./', '').replace('.mp3', '') + CEND
 
-    os.system('paplay out.wav & python Visuals.py out.wav')
+    os.system('$(sleep 5; paplay out.wav) & python Visuals.py out.wav')
     #os.system('python Visuals.py out.wav')
     os.system('rm out.wav')
 

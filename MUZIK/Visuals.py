@@ -47,8 +47,8 @@ class Visualize:
             # Split the signal into left and right signal
             self.L = np.array(self.DATA_BUFFER[0::2])
             self.R = self.DATA_BUFFER[1::2]
-            lmin = self.L.min()
-            rmin = self.R.min()
+            #lmin = self.L.min()
+            #rmin = self.R.min()
             if np.sqrt(self.FrameRate) % 2 == 0:
                 LEFT = self.L.reshape((int(np.sqrt(self.L.shape[0])),
                                        int(np.sqrt(self.L.shape[0]))))
@@ -86,19 +86,25 @@ class Visualize:
 
                 # i = self.generateCascadingImages(ndi.convolve(iMatL[0:100, :],streak,origin=0),5)
                 # for imat in i:
-                #    i = plt.imshow(iMatL[0:100,:], 'gray')
+                #    i = plt.imshow(iMatL[0:100,:], 'rainbow')
                 #    images.append([i])
 
-                alpha = np.array(ndi.convolve(iMatL[0:50, :],spark,origin=0)).conjugate()
-
-                II1 = np.concatenate((ndi.convolve(iMatL[0:50, :],streak, origin=0),
-                                     ndi.convolve(iMatL[0:50, :],bloom, origin=0)+alpha),0)
-                II2 = np.concatenate((ndi.convolve(iMatL[0:50,:],spark, origin=0),
-                                     ndi.convolve(iMatL[0:50,:],buffd, origin=0)),0)
-                II = np.concatenate((II1,II2),1)
-                images.append([plt.imshow(II,'gray')])
-                #images.append([i])
-                #images.append([i0])
+                if frame%2==0:
+                    alpha = np.array(ndi.convolve(iMatL[0:250, :]*10, spark, origin=0)).conjugate()
+                else:
+                    alpha = np.array(ndi.convolve(iMatL[0:250, :]*10, streak, origin=0)).conjugate()
+                for pt in alpha.flatten():
+                    if pt>3:
+                        pt=5
+                    if pt < 3 and iMatL.flatten()[frame]:
+                        pt += 1
+                images.append([plt.imshow(alpha[0:30,0:100],'rainbow')])
+                images.append([plt.imshow(alpha[30:60, 0:100], 'rainbow')])
+                images.append([plt.imshow(alpha[60:90, 0:100], 'rainbow')])
+                images.append([plt.imshow(alpha[90:120, 0:100], 'rainbow')])
+                images.append([plt.imshow(alpha[120:150, 0:100], 'rainbow')])
+                #images.append([plt.imshow(iMatL, 'rainbow')])
+                #images.append([plt.imshow(iMatL.conjugate(), 'rainbow')])
 
         stream.close()
         return images
@@ -140,7 +146,7 @@ def main():
             f = plt.figure()
             images = Visualize(sys.argv[1]).run(sys.argv[1])
             print "Rendering " + str(len(images)) + " images"
-            a = animation.ArtistAnimation(f, images, interval=125,
+            a = animation.ArtistAnimation(f, images, interval=100,
                                           blit=True, repeat_delay=3000)
             plt.show()
         except KeyboardInterrupt:

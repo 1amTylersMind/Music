@@ -10,8 +10,7 @@ cd /
 printf "${RED}${BOLD}SEARCHING FOR ALL MUSIC${NCEND}\n"
 find -name '*.mp3' | while read song; do
     printf "%d - ${BOLD}Found:${NCEND}${GREEN}${BOLD}' %s '${NCEND}\n" "$I" "$song"
-    let I=$((I+1))
+    I=$((I+1))
     sleep 0.2
-    cp $song /media/root/DB0/songs/
 done;
 #EOF
